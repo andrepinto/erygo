@@ -4,7 +4,6 @@ import (
 	"bufio"
 	"bytes"
 	"strings"
-	"unicode"
 
 	"github.com/dave/jennifer/jen"
 )
@@ -18,20 +17,9 @@ type Error struct {
 	Details    []string
 }
 
-func (err *Error) SourceCodeID() string {
-	name := strings.TrimFunc(strings.Title(err.Name),
-		func(r rune) bool {
-			return unicode.IsPunct(r) || unicode.IsSpace(r)
-		})
-	if !strings.HasPrefix(name, "Err") {
-		name = "Err" + name
-	}
-	return name
-}
-
 func (err *Error) GenerateSource(prj *Project) *jen.Statement {
 
-	fn := jen.Func().Id(err.SourceCodeID()).
+	fn := jen.Func().Id(err.Name).
 		Params(jen.Id("params").Op("...").Func().Params(jen.Op("*").Qual(BasePath, "Err"))).
 		Op("*").Qual(BasePath, "Err").
 		Block(jen.Id("err").Op(":=").Id("&erygo.Err").Values(
@@ -61,11 +49,11 @@ func (err *Error) GenerateSource(prj *Project) *jen.Statement {
 			jen.Return(jen.Id("err")),
 		)
 	if err.Comment != "" {
-		return jen.Comment(err.SourceCodeID() + " error ").Line().
+		return jen.Comment(err.Name + " error ").Line().
 			Add(buildComments(err.Comment).Add(fn))
 	}
 
-	return fn
+	return jen.Comment(err.Name + " error ").Line().Add(fn).Line()
 }
 
 func sanitizeCommentLine(commentLine string) string {

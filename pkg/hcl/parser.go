@@ -44,5 +44,24 @@ func Parse(path string) (*project.Project, error) {
 		return nil, err
 	}
 
+	if o := list.Filter("error"); len(o.Items) > 0 {
+		if err := parseError(project, o); err != nil {
+			return nil, fmt.Errorf("error parsing 'error': %s", err)
+		}
+	}
+
 	return project, nil
+}
+
+func parseError(result *project.Project, list *ast.ObjectList) error {
+
+	for v, item := range list.Items {
+
+		tag := item.Keys[0].Token.Value().(string)
+
+		result.Error[v].Name = tag
+
+	}
+
+	return nil
 }

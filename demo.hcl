@@ -2,8 +2,8 @@
 Project base settings
 */
 settings{
-    Name = "autherr"
-    Service = "auth"
+    Name = "userserr"
+    Service = "users"
 	Keys = {
         env = "dev"
         release = "v1.0.0"
@@ -12,26 +12,18 @@ settings{
 
 
 //Error definition
-error "ErrInvalidToken"{
-    Name = "ErrInvalidToken"
-    StatusHTTP = 400
-    Message = "invalid token received"
+error "UserNotFoud"{
+    StatusHTTP = 404
+    Message = "user not found"
     Kind = 1
     Details = ["hello {{.env}}"]
 }
 
 //Error definition
-error "ErrInvalidToken"{
-    Name = "ErrTokenNotOwnedBySender"
-    StatusHTTP = 403
-    Message = "Can`t identify sender as token owner"
+error "InternalServerError"{
+    StatusHTTP = 500
+    Message = "internal server error"
     Kind = 2
+    Details = ["hello {{.env}}"]
 }
 
-//Error definition
-error "ErrInvalidToken"{
-    Name = "ErrTokenNotFound"
-    StatusHTTP = 404
-    Message = "Token was not found in storage"
-    Kind = 3
-}

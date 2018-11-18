@@ -7,7 +7,7 @@ import (
 )
 
 func main() {
-	err := autherr.ErrInvalidToken()
+	err := userserr.UserNotFoud()
 	err.AddDetails("detail added")
 	fmt.Println(err)
 }
