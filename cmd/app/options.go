@@ -8,7 +8,8 @@ const ()
 
 //ErygoCmdOptions ...
 type ErygoCmdOptions struct {
-	File string
+	File   string
+	Folder string
 }
 
 //NewErygoCmdOptions ...
@@ -25,6 +26,12 @@ func (opts *ErygoCmdOptions) AddFlags(app *cli.App) {
 			Value:       "",
 			Usage:       "file",
 			Destination: &opts.File,
+		},
+		cli.StringFlag{
+			Name:        "folder",
+			Value:       "./",
+			Usage:       "folder",
+			Destination: &opts.Folder,
 		},
 	}
 

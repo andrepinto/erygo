@@ -29,8 +29,11 @@ func (cli *ErygoApp) Run(options *ErygoCmdOptions) error {
 
 	log.Info(project, err)
 
-	source, err := createOutputFile("./"+project.Settings.Name, project.Settings.Name)
+	source, err := createOutputFile(options.Folder, project.Settings.Name)
 	project.Gen(source)
+
+	sourceUtil, err := createOutputFile(options.Folder, "util.go")
+	project.GenUtil(sourceUtil)
 
 	return nil
 }

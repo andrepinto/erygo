@@ -3,14 +3,13 @@ package main
 import (
 	"fmt"
 
-	"github.com/andrepinto/erygo/example/messages/errors"
-	"github.com/andrepinto/erygo/example/messages/responses"
+	"github.com/andrepinto/erygo/example/messages"
 )
 
 func main() {
-	err := errors.UserNotFoud().AddDetails("detail added")
+	err := messages.UserNotFoud().AddDetails("detail added")
 	fmt.Println(err)
 
-	response := responses.UserCreatedWithSuccess().AddResult("ok").AddDetails("detail added")
+	response := messages.UserCreatedWithSuccess().AddResult("ok").AddDetails("detail added")
 	fmt.Println(response)
 }

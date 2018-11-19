@@ -3,12 +3,14 @@ Project base settings
 */
 settings{
     Name = "errors"
+    Package = "messages"
     Service = "users"
 	Keys = {
         env = "dev"
         release = "v1.0.0"
     }
 }
+
 
 message "error" "UserNotFoud"{
     StatusHTTP = 404
@@ -24,11 +26,4 @@ message "error" "InternalServerError"{
     Details = ["hello {{.env}}"]
 }
 
-
-message "response" "UserCreatedWithSuccess"{
-    StatusHTTP = 200
-    Message = "user created with success"
-    Kind = 3
-    Details = []
-}
 
