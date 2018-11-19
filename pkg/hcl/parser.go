@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 
 	"github.com/andrepinto/erygo/pkg/project"
+	multierror "github.com/hashicorp/go-multierror"
 	"github.com/hashicorp/hcl"
 	"github.com/hashicorp/hcl/hcl/ast"
 )
@@ -32,7 +33,7 @@ func Parse(path string) (*project.Project, error) {
 
 	valid := []string{
 		"settings",
-		"error",
+		"message",
 	}
 
 	list, ok := data.Node.(*ast.ObjectList)
@@ -44,8 +45,8 @@ func Parse(path string) (*project.Project, error) {
 		return nil, err
 	}
 
-	if o := list.Filter("error"); len(o.Items) > 0 {
-		if err := parseError(project, o); err != nil {
+	if o := list.Filter("message"); len(o.Items) > 0 {
+		if err := parseMessage(project, o); err != nil {
 			return nil, fmt.Errorf("error parsing 'error': %s", err)
 		}
 	}
@@ -53,13 +54,33 @@ func Parse(path string) (*project.Project, error) {
 	return project, nil
 }
 
-func parseError(result *project.Project, list *ast.ObjectList) error {
+func parseMessage(result *project.Project, list *ast.ObjectList) error {
 
-	for v, item := range list.Items {
+	for _, item := range list.Items {
 
-		tag := item.Keys[0].Token.Value().(string)
+		tzpe := item.Keys[0].Token.Value().(string)
+		name := item.Keys[1].Token.Value().(string)
 
-		result.Error[v].Name = tag
+		fmt.Println(item.Keys[0])
+
+		if tzpe == project.ErrorType {
+			errorData := project.Error{}
+			if err := hcl.DecodeObject(&errorData, item); err != nil {
+				return multierror.Prefix(err, fmt.Sprintf("erygo.%s:", tzpe))
+			}
+			errorData.Name = name
+
+			result.Error = append(result.Error, errorData)
+		}
+
+		if tzpe == project.ResponseType {
+			resposeData := project.Response{}
+			if err := hcl.DecodeObject(&resposeData, item); err != nil {
+				return multierror.Prefix(err, fmt.Sprintf("erygo.%s:", tzpe))
+			}
+			resposeData.Name = name
+			result.Responses = append(result.Responses, resposeData)
+		}
 
 	}
 

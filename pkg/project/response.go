@@ -4,7 +4,7 @@ import (
 	"github.com/dave/jennifer/jen"
 )
 
-type Error struct {
+type Response struct {
 	Name       string
 	StatusHTTP int
 	Message    string
@@ -13,7 +13,7 @@ type Error struct {
 	Details    []string
 }
 
-func (err *Error) GenerateSource(prj *Project) *jen.Statement {
+func (err *Response) GenerateSource(prj *Project) *jen.Statement {
 
 	fn := jen.Func().Id(err.Name).
 		Params(jen.Id("params").Op("...").Func().Params(jen.Op("*").Qual(BasePath, "Err"))).

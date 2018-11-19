@@ -10,20 +10,25 @@ settings{
     }
 }
 
-
-//Error definition
-error "UserNotFoud"{
+message "error" "UserNotFoud"{
     StatusHTTP = 404
     Message = "user not found"
     Kind = 1
     Details = ["hello {{.env}}"]
 }
 
-//Error definition
-error "InternalServerError"{
+message "error" "InternalServerError"{
     StatusHTTP = 500
     Message = "internal server error"
     Kind = 2
     Details = ["hello {{.env}}"]
+}
+
+
+message "response" "UserCreatedWithSuccess"{
+    StatusHTTP = 200
+    Message = "user created with success"
+    Kind = 3
+    Details = []
 }
 

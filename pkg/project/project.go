@@ -9,8 +9,9 @@ import (
 
 //Project ...
 type Project struct {
-	Settings Settings
-	Error    []Error
+	Settings  Settings
+	Error     []Error
+	Responses []Response
 }
 
 //Settings ...

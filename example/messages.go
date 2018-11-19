@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	"github.com/andrepinto/erygo/data"
+	"github.com/andrepinto/erygo/example/data"
 )
 
 func main() {
