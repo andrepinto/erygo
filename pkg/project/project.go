@@ -1,7 +1,6 @@
 package project
 
 import (
-	"fmt"
 	"io"
 
 	"github.com/dave/jennifer/jen"
@@ -29,8 +28,11 @@ func (prj *Project) Gen(file io.Writer) error {
 	//consts := []jen.Code{}
 
 	for _, errDecl := range prj.Error {
-		fmt.Println(errDecl)
 		pack.Line().Add(errDecl.GenerateSource(prj))
+	}
+
+	for _, respDecl := range prj.Responses {
+		pack.Line().Add(respDecl.GenerateSource(prj))
 	}
 
 	pack.Func().Id("renderTemplate").Params(jen.Id("templText").String()).String().Block(
@@ -49,6 +51,11 @@ func (prj *Project) Gen(file io.Writer) error {
 			jen.Return(jen.Id("err").Dot("Error").Call()),
 		),
 		jen.Return(jen.Id("buf").Dot("String").Call()),
+	)
+
+	pack.Line().Func().Id("checkStatus").Params(jen.Id("status").Int()).Bool().Block(
+
+		jen.Return(jen.Id("status").Op("<").Id("400")),
 	)
 
 	return pack.Render(file)

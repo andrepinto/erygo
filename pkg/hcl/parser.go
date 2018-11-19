@@ -61,8 +61,6 @@ func parseMessage(result *project.Project, list *ast.ObjectList) error {
 		tzpe := item.Keys[0].Token.Value().(string)
 		name := item.Keys[1].Token.Value().(string)
 
-		fmt.Println(item.Keys[0])
-
 		if tzpe == project.ErrorType {
 			errorData := project.Error{}
 			if err := hcl.DecodeObject(&errorData, item); err != nil {

@@ -7,7 +7,9 @@ import (
 )
 
 func main() {
-	err := userserr.UserNotFoud()
-	err.AddDetails("detail added")
+	err := userserr.UserNotFoud().AddDetails("detail added")
 	fmt.Println(err)
+
+	response := userserr.UserCreatedWithSuccess().AddResult("ok").AddDetails("detail added")
+	fmt.Println(response)
 }

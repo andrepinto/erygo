@@ -49,6 +49,28 @@ func InternalServerError(params ...func(*erygo.Err)) *erygo.Err {
 	return err
 }
 
+// UserCreatedWithSuccess response
+func UserCreatedWithSuccess(params ...func(*erygo.Response)) *erygo.Response {
+	resp := &erygo.Response{
+		Details: []string{},
+		Info: erygo.Info{
+			Kind:    3,
+			Service: "users",
+		},
+		Message:    "user created with success",
+		StatusHTTP: 200,
+		Success:    checkStatus(200),
+	}
+	for _, param := range params {
+		param(resp)
+	}
+	for i, detail := range resp.Details {
+		det := renderTemplate(detail)
+		resp.Details[i] = det
+	}
+	return resp
+}
+
 func renderTemplate(templText string) string {
 	buf := &bytes.Buffer{}
 	templ, err := template.New("").Parse(templText)
@@ -63,4 +85,8 @@ func renderTemplate(templText string) string {
 		return err.Error()
 	}
 	return buf.String()
+}
+
+func checkStatus(status int) bool {
+	return status < 400
 }
