@@ -8,7 +8,7 @@ const ()
 
 //ErygoCmdOptions ...
 type ErygoCmdOptions struct {
-	Path string
+	File string
 }
 
 //NewErygoCmdOptions ...
@@ -21,10 +21,10 @@ func (opts *ErygoCmdOptions) AddFlags(app *cli.App) {
 
 	flags := []cli.Flag{
 		cli.StringFlag{
-			Name:        "path",
+			Name:        "file",
 			Value:       "",
-			Usage:       "path",
-			Destination: &opts.Path,
+			Usage:       "file",
+			Destination: &opts.File,
 		},
 	}
 

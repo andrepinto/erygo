@@ -25,11 +25,11 @@ func (cli *ErygoApp) Run(options *ErygoCmdOptions) error {
 
 	log.Infof("Options: \n %v", options)
 
-	project, err := hcl.Parse("./example/demo.hcl")
+	project, err := hcl.Parse(options.File)
 
 	log.Info(project, err)
 
-	source, err := createOutputFile("./example/data", project.Settings.Name)
+	source, err := createOutputFile("./"+project.Settings.Name, project.Settings.Name)
 	project.Gen(source)
 
 	return nil
