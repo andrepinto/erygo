@@ -5,9 +5,12 @@ before:
     # you may remove this if you don't use vgo
     - go mod download
 builds:
-- main: ./cmd/main.go
-- env:
-  - CGO_ENABLED=0
+-
+    # Path to main.go file or main package.
+    # Default is `.`.
+    main: ./cmd/main.go
+    env:
+      - CGO_ENABLED=0
 archive:
   replacements:
     darwin: Darwin
