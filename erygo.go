@@ -1,11 +1,21 @@
 package erygo
 
-import "fmt"
+import (
+	"bytes"
+	"fmt"
+	"net/http"
+	"strconv"
+	"strings"
+)
 
 //Info ...
 type Info struct {
-	Service string `json:"sid"`
+	Service string `json:"service"`
 	Kind    int    `json:"kind"`
+}
+
+func (info *Info) String() string {
+	return fmt.Sprintf("%v-%v", info.Service, info.Kind)
 }
 
 type Labels map[string]string
@@ -65,6 +75,25 @@ func (err *Err) WithLabels(labels Labels) *Err {
 func (err *Err) Log(extErr error, logger Logger) *Err {
 	logger.LogErr(extErr, err)
 	return err
+}
+
+func (err *Err) Error() string {
+	buf := bytes.NewBufferString("[" + err.Info.String() + "] " +
+		http.StatusText(err.StatusHTTP) + " " +
+		err.Message)
+	if len(err.Details) > 0 {
+		buf.WriteString(": ")
+		buf.WriteString(strings.Join(err.Details, "; "))
+	}
+	if len(err.Labels) > 0 {
+		buf.WriteString(": ")
+		var fields []string
+		for name, value := range err.Labels {
+			fields = append(fields, name+"="+strconv.QuoteToASCII(value))
+		}
+		buf.WriteString(strings.Join(fields, ", "))
+	}
+	return buf.String()
 }
 
 //Response ...
@@ -132,4 +161,71 @@ func (resp *Response) WithLabels(labels Labels) *Response {
 func (resp *Response) Log(msg string, logger Logger) *Response {
 	logger.LogResp(msg, resp)
 	return resp
+}
+
+/*
+* Constructor
+ */
+
+//ErrConstruct ...
+type ErrConstruct func(...func(*Err)) *Err
+
+//Error ...
+func (constr ErrConstruct) Error() string {
+	return constr().Error()
+}
+
+//AddDetails ...
+func (constr ErrConstruct) AddDetails(details ...string) ErrConstruct {
+	return func(options ...func(*Err)) *Err {
+		err := constr().AddDetails(details...)
+		for _, option := range options {
+			option(err)
+		}
+		return err
+	}
+}
+
+//AddDetailsErr ...
+func (constr ErrConstruct) AddDetailsErr(details ...error) ErrConstruct {
+	return func(options ...func(*Err)) *Err {
+		err := constr().AddDetailsErr(details...)
+		for _, option := range options {
+			option(err)
+		}
+		return err
+	}
+}
+
+//AddDetailF ...
+func (constr ErrConstruct) AddDetailF(f string, vals ...interface{}) ErrConstruct {
+	return func(options ...func(*Err)) *Err {
+		err := constr().AddDetailF(f, vals...)
+		for _, option := range options {
+			option(err)
+		}
+		return err
+	}
+}
+
+//WithLabel ...
+func (constr ErrConstruct) WithLabel(key, value string) ErrConstruct {
+	return func(options ...func(*Err)) *Err {
+		err := constr().WithLabel(key, value)
+		for _, option := range options {
+			option(err)
+		}
+		return err
+	}
+}
+
+//WithLabels ...
+func (constr ErrConstruct) WithLabels(fields Labels) ErrConstruct {
+	return func(options ...func(*Err)) *Err {
+		err := constr().WithLabels(fields)
+		for _, option := range options {
+			option(err)
+		}
+		return err
+	}
 }
