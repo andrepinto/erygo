@@ -1,0 +1,67 @@
+{
+    "swagger": "2.0",
+    "paths": {},
+    "definitions": {
+      "Err": {
+        "description": "Err -- standard serializable API error",
+        "type": "object",
+        "properties": {
+          "details": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "x-go-name": "Details"
+          },
+          "labels": {
+            "$ref": "#/definitions/Labels"
+          },
+          "info": {
+            "$ref": "#/definitions/Info"
+          },
+          "message": {
+            "type": "string",
+            "x-go-name": "Message"
+          },
+          "status_http": {
+            "type": "integer",
+            "format": "int64",
+            "x-go-name": "StatusHTTP"
+          }
+        },
+        "x-go-package": "github.com/andrepinto/erygo"
+      },
+      "Info": {
+        "description": "Info -- represents error information",
+        "type": "object",
+        "properties": {
+          "kind": {
+            "$ref": "#/definitions/ErrKind"
+          },
+          "service": {
+            "$ref": "#/definitions/Service"
+          }
+        },
+        "x-go-package": "github.com/andrepinto/erygo"
+      },
+      "ErrKind": {
+        "description": "ErrKind -- represents kind of error",
+        "type": "integer",
+        "format": "uint64",
+        "x-go-package": "github.com/andrepinto/erygo"
+      },
+      "Service": {
+        "description": "Service -- represents service error",
+        "type": "string",
+        "x-go-package": "github.com/andrepinto/erygo"
+      },
+      "Labels": {
+        "description": "Labels -- represents additional key-value fields of error",
+        "type": "object",
+        "additionalProperties": {
+          "type": "string"
+        },
+        "x-go-package": "github.com/andrepinto/erygo"
+      }
+    }
+  }
