@@ -61,6 +61,12 @@ func (err *Err) WithLabels(labels Labels) *Err {
 	return err
 }
 
+//Log ...
+func (err *Err) Log(extErr error, logger Logger) *Err {
+	logger.LogErr(extErr, err)
+	return err
+}
+
 //Response ...
 type Response struct {
 	ID            string      `json:"id" `
@@ -119,5 +125,11 @@ func (resp *Response) WithLabels(labels Labels) *Response {
 		resp.Labels[code] = value
 	}
 
+	return resp
+}
+
+//Log ...
+func (resp *Response) Log(msg string, logger Logger) *Response {
+	logger.LogResp(msg, resp)
 	return resp
 }
